@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batı Ermenicesi Metin Kontrol Aracı</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #c7d2fe 100%);
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        h1 {
+            color: #1f2937;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .settings-btn {
+            background: #e0e7ff;
+            color: #4f46e5;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .settings-btn:hover {
+            background: #c7d2fe;
+        }
+
+        .settings-panel {
+            display: none;
+        }
+
+        .settings-panel.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input[type="password"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .help-text {
+            color: #6b7280;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: #4338ca;
+        }
+
+        .btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: #16a34a;
+        }
+
+        .btn-success:hover {
+            background: #15803d;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            padding: 8px 12px;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            margin-top: 16px;
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: start;
+            gap: 12px;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .text-input-container {
+            margin-bottom: 16px;
+        }
+
+        .text-input-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .text-number {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .remove-btn {
+            margin-left: auto;
+        }
+
+        .add-text-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            color: #1f2937;
+            font-size: 20px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .result-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .result-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .result-icon.success {
+            color: #16a34a;
+        }
+
+        .result-icon.warning {
+            color: #f59e0b;
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .result-text {
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            font-size: 14px;
+            color: #374151;
+            direction: rtl;
+        }
+
+        .result-analysis {
+            margin-top: 16px;
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .result-analysis h4 {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .result-analysis-text {
+            color: #1f2937;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            color: #6b7280;
+            font-size: 12px;
+            margin-top: 32px;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="card">
+            <div class="header">
+                <div>
+                    <h1>Batı Ermenicesi Metin Kontrol Aracı</h1>
+                    <p class="subtitle">Haber metinlerinizi dilbilgisi ve yazım hataları için analiz edin</p>
+                </div>
+                <button class="settings-btn" onclick="toggleSettings()">⚙️ Ayarlar</button>
+            </div>
+        </div>
+
+        <!-- Settings Panel -->
+        <div id="settingsPanel" class="card settings-panel">
+            <h2 style="margin-bottom: 16px;">API Ayarları</h2>
+            <div class="form-group">
+                <label for="apiKey">Anthropic API Key</label>
+                <input type="password" id="apiKey" placeholder="sk-ant-...">
+                <p class="help-text">API key'inizi https://console.anthropic.com adresinden alabilirsiniz</p>
+            </div>
+            <button class="btn" onclick="saveApiKey()">Kaydet</button>
+        </div>
+
+        <!-- Error Alert -->
+        <div id="errorAlert" class="alert alert-error hidden">
+            <span>⚠️</span>
+            <span id="errorText"></span>
+        </div>
+
+        <!-- Input Section -->
+        <div class="card">
+            <div class="add-text-header">
+                <h2>Metin Girişi</h2>
+                <button class="btn btn-success" onclick="addTextField()">+ Yeni Metin Ekle</button>
+            </div>
+            <div id="textInputs"></div>
+            <button class="btn btn-full" onclick="analyzeTexts()" id="analyzeBtn">
+                Metinleri Analiz Et
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results"></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Claude Haiku 4.5 modeli kullanılıyor | Tahmini maliyet: ~$0.001 per metin</p>
+        </div>
+    </div>
+
+    <script>
+        let apiKey = '';
+        let texts = [''];
+        let isAnalyzing = false;
+
+        // Initialize
+        function init() {
+            renderTextInputs();
+        }
+
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            panel.classList.toggle('active');
+        }
+
+        function saveApiKey() {
+            const input = document.getElementById('apiKey');
+            apiKey = input.value.trim();
+            if (apiKey) {
+                toggleSettings();
+                hideError();
+                showSuccess('API key kaydedildi!');
+            } else {
+                showError('Lütfen geçerli bir API key girin');
+            }
+        }
+
+        function showError(message) {
+            const alert = document.getElementById('errorAlert');
+            const text = document.getElementById('errorText');
+            text.textContent = message;
+            alert.classList.remove('hidden');
+        }
+
+        function hideError() {
+            const alert = document.getElementById('errorAlert');
+            alert.classList.add('hidden');
+        }
+
+        function showSuccess(message) {
+            // Simple success feedback
+            const originalBtn = document.querySelector('.settings-btn');
+            const originalText = originalBtn.textContent;
+            originalBtn.textContent = '✓ ' + message;
+            setTimeout(() => {
+                originalBtn.textContent = originalText;
+            }, 2000);
+        }
+
+        function addTextField() {
+            texts.push('');
+            renderTextInputs();
+        }
+
+        function removeTextField(index) {
+            if (texts.length > 1) {
+                texts.splice(index, 1);
+                renderTextInputs();
+            }
+        }
+
+        function updateText(index, value) {
+            texts[index] = value;
+        }
+
+        function renderTextInputs() {
+            const container = document.getElementById('textInputs');
+            container.innerHTML = texts.map((text, index) => `
+                <div class="text-input-container">
+                    <div class="text-input-header">
+                        <span class="text-number">#${index + 1}</span>
+                        ${texts.length > 1 ? `<button class="btn btn-danger remove-btn" onclick="removeTextField(${index})">✕</button>` : ''}
+                    </div>
+                    <textarea 
+                        placeholder="Batı Ermenicesi metninizi buraya yapıştırın..."
+                        onchange="updateText(${index}, this.value)"
+                        dir="rtl"
+                    >${text}</textarea>
+                </div>
+            `).join('');
+        }
+
+        async function analyzeTexts() {
+            if (!apiKey) {
+                showError('Lütfen önce API key\'inizi ayarlayın');
+                toggleSettings();
+                return;
+            }
+
+            const nonEmptyTexts = texts.filter(t => t.trim());
+            if (nonEmptyTexts.length === 0) {
+                showError('Lütfen en az bir metin girin');
+                return;
+            }
+
+            if (isAnalyzing) return;
+            isAnalyzing = true;
+
+            const btn = document.getElementById('analyzeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loader"></span>Analiz Ediliyor...';
+            
+            hideError();
+            document.getElementById('results').innerHTML = '';
+
+            try {
+                const results = [];
+
+                for (let i = 0; i < nonEmptyTexts.length; i++) {
+                    const text = nonEmptyTexts[i];
+
+                    const response = await fetch('https://api.anthropic.com/v1/messages', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-api-key': apiKey,
+                            'anthropic-version': '2023-06-01'
+                        },
+                        body: JSON.stringify({
+                            model: 'claude-haiku-4-20250514',
+                            max_tokens: 2000,
+                            messages: [{
+                                role: 'user',
+                                content: `Aşağıdaki Batı Ermenicesi metni analiz et ve tüm dilbilgisi ve yazım hatalarını bul. Her hata için:
+1. Hatanın yerini göster
+2. Ne tür bir hata olduğunu açıkla (yazım, dilbilgisi, noktalama vb.)
+3. Doğru versiyonu öner
+
+Eğer hata yoksa, bunu açıkça belirt.
+
+Metin:
+${text}
+
+Lütfen yanıtını şu formatta ver:
+- Eğer hata varsa: her hatayı madde madde listele
+- Eğer hata yoksa: "✓ Bu metinde hata bulunamadı" de`
+                            }]
+                        })
+                    });
+
+                    if (!response.ok) {
+                        let errorMsg = 'API hatası';
+                        try {
+                            const errorData = await response.json();
+                            errorMsg = errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`;
+                        } catch (e) {
+                            errorMsg = `HTTP ${response.status}: ${response.statusText}`;
+                        }
+                        throw new Error(errorMsg);
+                    }
+
+                    const data = await response.json();
+                    const analysis = data.content[0].text;
+
+                    results.push({
+                        text: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
+                        fullText: text,
+                        analysis: analysis,
+                        hasErrors: !analysis.includes('hata bulunamadı') && !analysis.includes('✓')
+                    });
+                }
+
+                displayResults(results);
+            } catch (err) {
+                showError(`Hata: ${err.message}`);
+            } finally {
+                isAnalyzing = false;
+                btn.disabled = false;
+                btn.textContent = 'Metinleri Analiz Et';
+            }
+        }
+
+        function displayResults(results) {
+            const container = document.getElementById('results');
+            container.innerHTML = results.map((result, index) => `
+                <div class="result-card">
+                    <div class="result-header">
+                        <div class="result-icon ${result.hasErrors ? 'warning' : 'success'}">
+                            ${result.hasErrors ? '⚠️' : '✓'}
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="result-title">Metin #${index + 1}</div>
+                            <div class="result-text">${result.text}</div>
+                        </div>
+                    </div>
+                    <div class="result-analysis">
+                        <h4>Analiz Sonucu:</h4>
+                        <div class="result-analysis-text">${result.analysis}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
